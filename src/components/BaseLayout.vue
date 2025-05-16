@@ -1,5 +1,6 @@
 <template>
   <div class="layout">
+    <BaseHeader />
     <main>
       <slot />
       <router-view />
@@ -8,4 +9,5 @@
 </template>
 
 <script setup>
+import BaseHeader from "./BaseHeader.vue";
 </script>
