@@ -17,9 +17,8 @@
       Edit
       <code>components/HelloWorld.vue</code> to test HMR
     </p>
-    <p>
-      user : {{ user.name }}
-    </p>
+    <p v-if="user">Connected User : {{ user.name }}</p>
+
   </div>
 
   <button-sign-in-microsoft />
