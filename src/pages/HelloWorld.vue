@@ -28,7 +28,7 @@
 
 <script setup>
 import {computed, ref} from 'vue'
-import ButtonSignInMicrosoft from "./buttons/ButtonSignInMicrosoft.vue";
+import ButtonSignInMicrosoft from "../components/buttons/ButtonSignInMicrosoft.vue";
 import {useStore} from "vuex";
 
 defineProps({

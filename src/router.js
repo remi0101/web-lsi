@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+import HelloWorld from "./pages/HelloWorld.vue";
 import BaseLayout from "./components/BaseLayout.vue";
-import NotFound from "./components/NotFound.vue";
+import NotFound from "./pages/NotFound.vue";
 
 const routes = [
     {
