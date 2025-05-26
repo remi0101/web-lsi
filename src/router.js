@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from "vue-router";
-import HelloWorld from "./pages/HelloWorld.vue";
+import HelloWorld from "./pages/HomePage.vue";
 import BaseLayout from "./components/BaseLayout.vue";
 import NotFound from "./pages/NotFound.vue";
 import MailList from "./pages/MailList.vue";

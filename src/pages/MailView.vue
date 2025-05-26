@@ -7,10 +7,6 @@
       <div class="bg-gray-100 p-4 rounded whitespace-pre-wrap">
         {{ mail.content }}
       </div>
-
-      <h3 class="text-lg font-semibold mt-6">Répondre</h3>
-      <textarea v-model="response" rows="5" class="w-full border p-2 rounded"></textarea>
-      <button @click="reply" class="mt-2 bg-[#4A919E] text-white px-4 py-2 rounded">Envoyer</button>
     </template>
 
     <template v-else>

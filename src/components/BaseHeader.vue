@@ -13,20 +13,14 @@
         </span>
         <LogOutButton />
       </template>
-      <template v-else>
-        <ButtonSignInMicrosoft />
-        <ButtonSignInGoogle />
-      </template>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import ButtonSignInMicrosoft from "./buttons/ButtonSignInMicrosoft.vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
 import LogOutButton from "./buttons/LogOutButton.vue";
-import ButtonSignInGoogle from "./buttons/ButtonSignInGoogle.vue";
 
 const store = useStore();
 const user = computed(() => store.getters.user);
