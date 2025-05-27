@@ -17,7 +17,6 @@ const msalInstance = new msal.PublicClientApplication({
     }
 })
 
-//if using "msale v3.x", otherwise in "msale v2.x" delete the next line
 msalInstance.initialize();
 
 export async function signInAndGetUser () {

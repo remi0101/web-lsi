@@ -1,4 +1,3 @@
-<!-- MailList.vue -->
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-4">
@@ -44,12 +43,11 @@ const store = useStore()
 
 const searchQuery = ref('')
 
-const mails = computed(() => store.state.mails || [])
-
 const filteredMails = computed(() => {
-  if (!searchQuery.value) return mails.value
+  const mails = store.state.mails
+  if (!searchQuery.value) return mails
   const q = searchQuery.value.toLowerCase()
-  return mails.value.filter(mail =>
+  return mails.filter(mail =>
       mail.sender.toLowerCase().includes(q) ||
       mail.subject.toLowerCase().includes(q) ||
       mail.date.includes(q)
@@ -61,9 +59,9 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('fr-FR')
 }
 
-
 function deleteMail(id) {
-  store.commit('setMails', mails.value.filter(mail => mail.id !== id))
+  const remainingMails = store.state.mails.filter(mail => mail.id !== id)
+  store.commit('setMails', remainingMails)
 }
 
 function openMail(id) {
