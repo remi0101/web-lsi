@@ -1,4 +1,3 @@
-<!-- MailList.vue -->
 <template>
   <div class="p-6">
     <div class="flex items-center justify-between mb-4">
@@ -61,7 +60,6 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('fr-FR')
 }
 
-
 function deleteMail(id) {
   store.commit('setMails', mails.value.filter(mail => mail.id !== id))
 }
@@ -75,7 +73,6 @@ function goToCreate() {
 }
 
 onMounted(() => {
-  // Charge les mails dans le store si la liste est vide
   if (!store.getters.mails || store.getters.mails.length === 0) {
     store.commit('setMails', dummyMails)
   }
