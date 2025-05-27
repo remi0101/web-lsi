@@ -13,22 +13,34 @@
   </button>
 </template>
 
-
 <script setup>
 import { useStore } from 'vuex'
-import {signInAndGetUser} from "../../lib/microsoftGraph.js";
+import {signInAndGetUser, getMails} from "../../lib/microsoftGraph.js";
 import {useRouter} from "vue-router";
-
 
 const store = useStore()
 const router = useRouter()
 
 const login = async () => {
-  signInAndGetUser()
-      .then(res => {
-        store.dispatch('updateUser', res.idTokenClaims)
-        router.push('/mails')
-      })
-      .catch(err => console.error(err))
+  try {
+    const res = await signInAndGetUser()
+    store.dispatch('updateUser', res.idTokenClaims)
+
+    const rawMails = await getMails(res.accessToken)
+
+    const formattedMails = rawMails.map((mail, index) => ({
+      id: index+1,
+      sender: mail.from?.emailAddress?.address || 'Inconnu',
+      subject: mail.subject || '(Sans sujet)',
+      body: mail.bodyPreview || '',
+      content: mail.body?.content || '',
+      date: mail.receivedDateTime?.split('T')[0] || ''
+    }))
+    store.dispatch('updateMails', formattedMails)
+
+    router.push('/mails')
+  } catch (err) {
+    console.error('Erreur login ou récupération mails :', err)
+  }
 }
 </script>

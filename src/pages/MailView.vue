@@ -4,9 +4,7 @@
     <template v-if="mail.id !== 0">
       <h2 class="text-xl font-bold">{{ mail.subject }}</h2>
       <p class="text-sm text-gray-500">De : {{ mail.sender }} | {{ formatDate(mail.date) }}</p>
-      <div class="bg-gray-100 p-4 rounded whitespace-pre-wrap">
-        {{ mail.content }}
-      </div>
+      <div class="bg-gray-100 p-4 rounded" v-html="mail.content"></div>
     </template>
 
     <template v-else>
@@ -31,9 +29,7 @@ const router = useRouter()
 const store = useStore()
 const mailId = Number(route.params.id)
 
-const mails = computed(() => store.state.mails)
-
-const mail = computed(() => mails.value.find(m => m.id === mailId) || {
+const mail = computed(() => store.state.mails.find(m => m.id === mailId) || {
   id: 0,
   sender: '',
   subject: '',

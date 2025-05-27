@@ -74,10 +74,4 @@ function goToCreate() {
   router.push('/mails/new')
 }
 
-onMounted(() => {
-  // Charge les mails dans le store si la liste est vide
-  if (!store.getters.mails || store.getters.mails.length === 0) {
-    store.commit('setMails', dummyMails)
-  }
-})
 </script>
