@@ -31,9 +31,7 @@ const router = useRouter()
 const store = useStore()
 const mailId = Number(route.params.id)
 
-const mails = computed(() => store.state.mails)
-
-const mail = computed(() => mails.value.find(m => m.id === mailId) || {
+const mail = computed(() => store.state.mails.find(m => m.id === mailId) || {
   id: 0,
   sender: '',
   subject: '',

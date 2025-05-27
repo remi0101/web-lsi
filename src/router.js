@@ -5,6 +5,7 @@ import NotFound from "./pages/NotFound.vue";
 import MailList from "./pages/MailList.vue";
 import MailView from "./pages/MailView.vue";
 import MailCreate from "./pages/MailCreate.vue";
+import store from "./store/user.js";
 
 const routes = [
     {
@@ -12,9 +13,9 @@ const routes = [
         component:  BaseLayout,
         children : [
             {path: '', name:"HomePage", component: HelloWorld},
-            {path: '/mails', name:'MailsList', component: MailList},
-            {path: 'mails/:id', name:"MailDetail", component: MailView},
-            {path: 'mails/new', name:"MailNew", component: MailCreate},
+            {path: '/mails', name:'MailsList', component: MailList, meta: {requiresAuth: true}},
+            {path: 'mails/:id', name:"MailDetail", component: MailView, meta: {requiresAuth: true}},
+            {path: 'mails/new', name:"MailNew", component: MailCreate, meta: {requiresAuth: true}},
         ]
     },
     {
@@ -24,9 +25,19 @@ const routes = [
     }
 ]
 
+
+
 const router = createRouter({
     history: createWebHistory(),
     routes
+})
+
+router.beforeEach((to, from, next) => {
+    const user = store.getters.user
+    if(to.meta.requiresAuth && !user) {
+        return next('/')
+    }
+    return next();
 })
 
 export default router
