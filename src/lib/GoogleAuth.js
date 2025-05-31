@@ -27,7 +27,6 @@ function handleCredentialResponse(response) {
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const decodedPayload = JSON.parse(atob(base64));
 
-  console.log("Decoded ID Token payload :", decodedPayload);
 
   if (_callback) _callback(decodedPayload);
 }

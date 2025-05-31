@@ -25,13 +25,11 @@ const router = useRouter()
 const clientId = "665918691478-n39i7gq4qpduq4vd15ftsme38fhrn2h6.apps.googleusercontent.com"
 
 const handleGoogleSignIn = () => {
-  console.log("➡️ Début authentification Google");
   
   try {
     google.accounts.id.initialize({
       client_id: clientId,
       callback: async (response) => {
-        console.log("✅ ID Token reçu");
         
         // Décoder le token et mettre à jour l'utilisateur
         const base64Url = response.credential.split('.')[1];
@@ -48,7 +46,6 @@ const handleGoogleSignIn = () => {
         // Attendre un peu avant de demander l'access token
         setTimeout(() => {
           getAccessToken(clientId, async (accessToken) => {
-            console.log("🔑 Access Token:", accessToken ? "Reçu" : "Non reçu");
             
             if (!accessToken) {
               return;
@@ -56,13 +53,12 @@ const handleGoogleSignIn = () => {
             
             try {
               const mails = await fetchGmailMessages(accessToken);
-              console.log("📧 Mails récupérés:", mails);
               if (mails && mails.length > 0) {
                 store.dispatch('updateMails', mails);
                 router.push('/mails'); // Redirection après réception des mails
               }
             } catch (error) {
-              console.error("❌ Erreur récupération mails:", error);
+              console.error(" Erreur récupération mails:", error);
               alert("Erreur lors de la récupération des mails");
             }
           });
