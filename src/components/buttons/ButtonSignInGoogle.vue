@@ -25,45 +25,41 @@ const router = useRouter()
 const clientId = "665918691478-n39i7gq4qpduq4vd15ftsme38fhrn2h6.apps.googleusercontent.com"
 
 const handleGoogleSignIn = () => {
-  if (typeof google === 'undefined') {
-    alert("❌ Google Identity API non chargée")
-    return
-  }
-
-  // 1. Authentification Google (ID Token)
-  google.accounts.id.initialize({
-    client_id: clientId,
-    callback: (response) => {
-      if (!response.credential) {
-        console.error("❌ Aucun token d'identité reçu")
-        return
+  console.log("➡️ Début authentification Google");
+  
+  try {
+    google.accounts.id.initialize({
+      client_id: clientId,
+      callback: (response) => {
+        console.log("✅ ID Token reçu");
+        
+        // Attendre un peu avant de demander l'access token
+        setTimeout(() => {
+          getAccessToken(clientId, async (accessToken) => {
+            console.log("🔑 Access Token:", accessToken ? "Reçu" : "Non reçu");
+            
+            if (!accessToken) {
+              return;
+            }
+            
+            try {
+              const mails = await fetchGmailMessages(accessToken);
+              console.log("📧 Mails récupérés:", mails);
+              store.dispatch('updateMails', mails);
+              router.push('/mails');
+            } catch (error) {
+              console.error("❌ Erreur récupération mails:", error);
+              alert("Erreur lors de la récupération des mails");
+            }
+          });
+        }, 500);
       }
+    });
 
-      const base64Url = response.credential.split('.')[1]
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-      const payload = JSON.parse(atob(base64))
-
-      store.dispatch('updateUser', {
-        name: payload.name,
-        email: payload.email,
-        picture: payload.picture,
-        provider: 'google'
-      })
-
-      // 2. Demander le token Gmail (OAuth)
-      getAccessToken(clientId, async (accessToken) => {
-        if (!accessToken) {
-          alert("Impossible d'obtenir un access token Gmail")
-          return
-        }
-        // 3. Récupérer les mails Gmail
-        const mails = await fetchGmailMessages(accessToken)
-        store.dispatch('updateMails', mails)
-        router.push('/mails')
-      })
-    }
-  })
-
-  google.accounts.id.prompt()
+    google.accounts.id.prompt();
+  } catch (error) {
+    console.error("❌ Erreur globale:", error);
+    alert("Une erreur est survenue lors de la connexion");
+  }
 }
 </script>
