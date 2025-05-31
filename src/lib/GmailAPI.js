@@ -5,7 +5,6 @@
  * @returns {Promise<Array>} Liste des messages formatés
  */
 export async function fetchGmailMessages(accessToken, maxResults = 20) {
-  console.log("➡️ Appel Gmail API avec token :", accessToken);
 
   try {
     // 1. Récupérer la liste des IDs des messages
@@ -20,7 +19,6 @@ export async function fetchGmailMessages(accessToken, maxResults = 20) {
     );
 
     const listJson = await messagesList.json();
-    console.log("🧾 Liste des messages :", listJson);
 
     if (!listJson.messages || listJson.messages.length === 0) {
       console.warn("Aucun message trouvé");
@@ -42,7 +40,6 @@ export async function fetchGmailMessages(accessToken, maxResults = 20) {
           );
           
           const data = await response.json();
-          console.log(`📨 Message ${msg.id} détails:`, data);
 
           // Extraire les headers (From, Subject, Date)
           const headers = Object.fromEntries(
@@ -74,7 +71,7 @@ export async function fetchGmailMessages(accessToken, maxResults = 20) {
             labelIds: data.labelIds || []
           };
         } catch (error) {
-          console.error(`❌ Erreur lors de la récupération du message ${msg.id}:`, error);
+          console.error(` Erreur lors de la récupération du message ${msg.id}:`, error);
           return null;
         }
       })
@@ -85,11 +82,10 @@ export async function fetchGmailMessages(accessToken, maxResults = 20) {
       .filter(msg => msg !== null)
       .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    console.log("✅ Messages formatés :", validMessages);
     return validMessages;
 
   } catch (error) {
-    console.error("❌ Erreur globale lors de la récupération des messages:", error);
+    console.error(" Erreur globale lors de la récupération des messages:", error);
     throw error;
   }
 }
