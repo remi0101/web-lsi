@@ -34,12 +34,22 @@ function handleCredentialResponse(response) {
 
 // ➕ Ajout : pour récupérer un access token
 export function getAccessToken(clientId, callback) {
-  google.accounts.oauth2.initTokenClient({
+  const client = google.accounts.oauth2.initTokenClient({
     client_id: clientId,
     scope: 'https://www.googleapis.com/auth/gmail.readonly',
-    callback: (tokenResponse) => {
-      console.log("Access Token reçu :", tokenResponse);
-      callback(tokenResponse.access_token);
+    callback: (response) => {
+      if (response.access_token) {
+        callback(response.access_token);
+      } else {
+        console.error('Pas de token reçu:', response);
+        callback(null);
+      }
+    },
+    error_callback: (error) => {
+      console.error('Erreur OAuth:', error);
+      callback(null);
     }
-  }).requestAccessToken();
+  });
+
+  client.requestAccessToken();
 }
