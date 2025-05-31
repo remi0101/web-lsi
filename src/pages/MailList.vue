@@ -41,10 +41,15 @@ import { dummyMails } from '../fixtures/mails.js'
 const router = useRouter()
 const store = useStore()
 
+onMounted(() => {
+  console.log("Mails dans le store:", store.state.mails)
+})
+
 const searchQuery = ref('')
 
 const filteredMails = computed(() => {
   const mails = store.state.mails
+  console.log("Mails filtrés:", mails) // Ajoute ce log
   if (!searchQuery.value) return mails
   const q = searchQuery.value.toLowerCase()
   return mails.filter(mail =>
