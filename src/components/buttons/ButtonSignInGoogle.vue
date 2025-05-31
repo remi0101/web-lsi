@@ -17,33 +17,31 @@
 <script setup>
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { getAccessToken } from '../../lib/GoogleAuth'
+import { fetchGmailMessages } from '../../lib/GmailAPI'
 
 const store = useStore()
 const router = useRouter()
-
 const clientId = "665918691478-n39i7gq4qpduq4vd15ftsme38fhrn2h6.apps.googleusercontent.com"
 
 const handleGoogleSignIn = () => {
-  console.log("Tentative de connexion Google")
-
   if (typeof google === 'undefined') {
-    alert("Google Identity API non chargée")
+    alert("❌ Google Identity API non chargée")
     return
   }
 
+  // 1. Authentification Google (ID Token)
   google.accounts.id.initialize({
     client_id: clientId,
     callback: (response) => {
       if (!response.credential) {
-        console.error("Pas de token reçu")
+        console.error("❌ Aucun token d'identité reçu")
         return
       }
 
       const base64Url = response.credential.split('.')[1]
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
       const payload = JSON.parse(atob(base64))
-
-      console.log("Payload décodé :", payload)
 
       store.dispatch('updateUser', {
         name: payload.name,
@@ -52,12 +50,20 @@ const handleGoogleSignIn = () => {
         provider: 'google'
       })
 
-      router.push('/mails')
+      // 2. Demander le token Gmail (OAuth)
+      getAccessToken(clientId, async (accessToken) => {
+        if (!accessToken) {
+          alert("Impossible d'obtenir un access token Gmail")
+          return
+        }
+        // 3. Récupérer les mails Gmail
+        const mails = await fetchGmailMessages(accessToken)
+        store.dispatch('updateMails', mails)
+        router.push('/mails')
+      })
     }
   })
 
-  google.accounts.id.prompt((notification) => {
-    console.log("Notification Google ID:", notification)
-  })
+  google.accounts.id.prompt()
 }
 </script>

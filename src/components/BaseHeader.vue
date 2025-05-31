@@ -2,7 +2,7 @@
   <header class="w-full bg-white border-b border-[#4A919E] px-6 py-6 shadow-md flex items-center justify-between">
     <div class="flex items-center space-x-3">
       <router-link to="/mails" class="text-2xl font-bold text-[#4A919E] tracking-tight">
-        MailBox
+        MailBox test
       </router-link>
     </div>
 
