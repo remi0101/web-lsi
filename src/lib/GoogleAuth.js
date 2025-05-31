@@ -32,24 +32,38 @@ function handleCredentialResponse(response) {
   if (_callback) _callback(decodedPayload);
 }
 
-// ➕ Ajout : pour récupérer un access token
 export function getAccessToken(clientId, callback) {
-  const client = google.accounts.oauth2.initTokenClient({
-    client_id: clientId,
-    scope: 'https://www.googleapis.com/auth/gmail.readonly',
-    callback: (response) => {
-      if (response.access_token) {
-        callback(response.access_token);
-      } else {
-        console.error('Pas de token reçu:', response);
+  try {
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: 'https://www.googleapis.com/auth/gmail.readonly',
+      callback: (response) => {
+        console.log("Token response:", response);
+        if (response.access_token) {
+          callback(response.access_token);
+        } else {
+          console.error('Pas de token reçu:', response);
+          callback(null);
+        }
+      },
+      error_callback: (error) => {
+        console.error('Erreur OAuth:', error);
+        if (error.type === 'popup_closed') {
+          alert('La fenêtre de connexion a été fermée. Veuillez réessayer.');
+        }
         callback(null);
       }
-    },
-    error_callback: (error) => {
-      console.error('Erreur OAuth:', error);
-      callback(null);
-    }
-  });
+    });
 
-  client.requestAccessToken();
+    // Attendre que le DOM soit prêt
+    setTimeout(() => {
+      client.requestAccessToken({
+        prompt: 'consent'
+      });
+    }, 100);
+
+  } catch (error) {
+    console.error('Erreur lors de l\'initialisation:', error);
+    callback(null);
+  }
 }
