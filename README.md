@@ -1,7 +1,5 @@
-# Vue 3 + Vite
+url : https://weblsi.alwaysdata.net/
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+repo : https://github.com/remi0101/web-lsi/tree/main
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
-"# web-lsi" 
-# web-lsi
+Membre : Tom Auxerre, Rémi Le Guernevé, Thomas Adragna
