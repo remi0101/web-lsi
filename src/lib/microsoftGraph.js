@@ -1,8 +1,5 @@
 import * as msal from '@azure/msal-browser'
 
-/**
- * List the requested scopes (aka. the requested permissions)
- */
 export const requestedScopes = {
     scopes: ["User.Read", "Mail.Read"]
 }

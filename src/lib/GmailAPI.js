@@ -45,7 +45,6 @@ export async function fetchGmailMessages(accessToken, maxResults = 20) {
                 (data.payload?.headers || []).map((h) => [h.name, h.value])
             );
 
-            // Chercher le contenu HTML ou fallback texte
             let content = '';
 
             if (data.payload?.mimeType === 'text/html' && data.payload.body?.data) {
@@ -57,7 +56,6 @@ export async function fetchGmailMessages(accessToken, maxResults = 20) {
               if (htmlPart?.body?.data) {
                 content = decodeBase64(htmlPart.body.data);
               } else if (textPart?.body?.data) {
-                // fallback en HTML formaté si pas de HTML
                 const plain = decodeBase64(textPart.body.data);
                 content = plain.replace(/(\r\n|\n|\r)/g, '<br>');
               }

@@ -24,7 +24,6 @@ const store = useStore()
 const router = useRouter()
 const clientId = "111787640120-t35tlg3c4gs15lagb1o15eln9se2rpag.apps.googleusercontent.com"
 
-// Lance la connexion Google (ID token)
 const handleGoogleLogin = async () => {
   signInWithGoogle(clientId, async (userData) => {
     store.dispatch('updateUser', {
