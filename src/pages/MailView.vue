@@ -27,21 +27,16 @@ import { useStore } from 'vuex'
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
-const mailId = Number(route.params.id)
+const mailId = route.params.id?.toString()
 
-const mail = computed(() => store.state.mails.find(m => m.id === mailId) || {
+const mail = computed(() =>   store.state.mails.find(m => m.id.toString() === mailId) || {
   id: 0,
   sender: '',
   subject: '',
   content: '',
   date: ''
 })
-
-const response = ref('')
-
-function reply() {
-  console.log('Réponse envoyée:', response.value)
-}
+console.log("Mail affiché:", mail.value)
 
 function formatDate(dateStr) {
   const d = new Date(dateStr)

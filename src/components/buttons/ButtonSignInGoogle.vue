@@ -1,7 +1,7 @@
 <template>
   <button
-    @click="handleGoogleSignIn"
-    class="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-100 transition text-base font-medium"
+      @click="handleGoogleLogin"
+      class="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-100 transition text-base font-medium"
   >
     <svg class="w-6 h-6" viewBox="0 0 48 48">
       <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.4l6.8-6.8C35.3 2.3 29.9 0 24 0 14.8 0 6.9 5.2 2.8 12.8l8.3 6.5C13 13.4 18.1 9.5 24 9.5z"/>
@@ -15,61 +15,43 @@
 </template>
 
 <script setup>
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-import { getAccessToken } from '../../lib/GoogleAuth'
-import { fetchGmailMessages } from '../../lib/GmailAPI'
+import {useStore} from 'vuex'
+import {useRouter} from 'vue-router'
+import {signInWithGoogle, createAccessTokenClient} from '../../lib/GoogleAuth'
+import {fetchGmailMessages} from '../../lib/GmailAPI'
 
 const store = useStore()
 const router = useRouter()
-const clientId = "665918691478-n39i7gq4qpduq4vd15ftsme38fhrn2h6.apps.googleusercontent.com"
+const clientId = "111787640120-t35tlg3c4gs15lagb1o15eln9se2rpag.apps.googleusercontent.com"
 
-const handleGoogleSignIn = () => {
-  
-  try {
-    google.accounts.id.initialize({
-      client_id: clientId,
-      callback: async (response) => {
-        
-        // Décoder le token et mettre à jour l'utilisateur
-        const base64Url = response.credential.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const userData = JSON.parse(atob(base64));
-        
-        // Mettre à jour l'utilisateur dans le store
-        store.dispatch('updateUser', {
-          name: userData.name,
-          email: userData.email,
-          picture: userData.picture
-        });
-        
-        // Attendre un peu avant de demander l'access token
-        setTimeout(() => {
-          getAccessToken(clientId, async (accessToken) => {
-            
-            if (!accessToken) {
-              return;
-            }
-            
-            try {
-              const mails = await fetchGmailMessages(accessToken);
-              if (mails && mails.length > 0) {
-                store.dispatch('updateMails', mails);
-                router.push('/mails'); // Redirection après réception des mails
-              }
-            } catch (error) {
-              console.error(" Erreur récupération mails:", error);
-              alert("Erreur lors de la récupération des mails");
-            }
-          });
-        }, 500);
+// Lance la connexion Google (ID token)
+const handleGoogleLogin = async () => {
+  signInWithGoogle(clientId, async (userData) => {
+    store.dispatch('updateUser', {
+      name: userData.name,
+      email: userData.email,
+      picture: userData.picture
+    })
+
+    const tokenClient = createAccessTokenClient(clientId, async (accessToken) => {
+      if (!accessToken) {
+        alert("Aucun token reçu");
+        return;
+      }
+
+      try {
+        const mails = await fetchGmailMessages(accessToken);
+        if (mails?.length > 0) {
+          store.dispatch('updateMails', mails);
+          router.push('/mails');
+        }
+      } catch (err) {
+        console.error("Erreur lors de la récupération des mails :", err);
+        alert("Impossible de récupérer les mails");
       }
     });
 
-    google.accounts.id.prompt();
-  } catch (error) {
-    console.error("❌ Erreur globale:", error);
-    alert("Une erreur est survenue lors de la connexion");
-  }
+    tokenClient.requestAccessToken()
+  })
 }
 </script>
